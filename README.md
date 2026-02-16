@@ -71,6 +71,44 @@ The app is deployed using Vercel.
 
 Environment variables are configured in the Vercel dashboard.
 
+## Challenges Faced and Solutions
+
+### 1. OAuth redirect worked locally but failed after deployment
+
+**Problem:**
+After deploying the app to Vercel, selecting a Google account redirected back to the login page instead of the dashboard.
+
+**Cause:**
+The redirect URL in the login function was hardcoded to `http://localhost:3000/auth/callback`, which only works in local development and not in production.
+
+**Solution:**
+Updated the redirect URL to use a dynamic origin:
+
+```
+redirectTo: `${window.location.origin}/auth/callback`
+```
+
+This ensures the correct redirect URL is used automatically in both local and production environments.
+
+---
+
+### 2. Supabase authentication failed due to missing production redirect URLs
+
+**Problem:**
+Even after deployment, authentication failed and users were redirected back to the login page.
+
+**Cause:**
+The deployed Vercel domain was not added to Supabase Authentication URL Configuration.
+
+**Solution:**
+Added the production domain in Supabase under Authentication → URL Configuration:
+
+* Site URL: `https://smart-bookmark-app-gamma-sage.vercel.app`
+* Redirect URL: `https://smart-bookmark-app-gamma-sage.vercel.app/auth/callback`
+
+This allowed Supabase to properly authorize and redirect users after login.
+
+
 ## Author
 
 Deepesh Raghav
